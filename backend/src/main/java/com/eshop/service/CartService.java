@@ -142,7 +142,7 @@ public class CartService {
         Product p = item.getProduct();
         BigDecimal effectivePrice = p.getSalePrice() != null ? p.getSalePrice() : p.getPrice();
         String primaryImg = p.getImages().stream()
-                .filter(ProductImage -> ProductImage.isPrimary())
+                .filter(productImage -> productImage.isPrimary())
                 .map(img -> img.getUrl())
                 .findFirst()
                 .orElse(p.getImages().isEmpty() ? null : p.getImages().get(0).getUrl());
