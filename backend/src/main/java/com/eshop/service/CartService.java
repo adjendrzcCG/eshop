@@ -8,6 +8,7 @@ import com.eshop.exception.ResourceNotFoundException;
 import com.eshop.model.Cart;
 import com.eshop.model.CartItem;
 import com.eshop.model.Product;
+import com.eshop.model.ProductImage;
 import com.eshop.model.User;
 import com.eshop.repository.CartRepository;
 import com.eshop.repository.ProductRepository;
@@ -142,8 +143,8 @@ public class CartService {
         Product p = item.getProduct();
         BigDecimal effectivePrice = p.getSalePrice() != null ? p.getSalePrice() : p.getPrice();
         String primaryImg = p.getImages().stream()
-                .filter(productImage -> productImage.isPrimary())
-                .map(img -> img.getUrl())
+                .filter(ProductImage::isPrimary)
+                .map(ProductImage::getUrl)
                 .findFirst()
                 .orElse(p.getImages().isEmpty() ? null : p.getImages().get(0).getUrl());
 
