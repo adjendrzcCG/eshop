@@ -21,3 +21,4 @@ logs/
 # Uploads
 uploads/
 
+target/*
