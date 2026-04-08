@@ -1,0 +1,48 @@
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3>ModelShop</h3>
+      <p>Your premier destination for scale models, paints, and RC cars.</p>
+      <div class="social-links">
+        <mat-icon>facebook</mat-icon>
+        <mat-icon>instagram</mat-icon>
+        <mat-icon>youtube_activity</mat-icon>
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <h4>Shop</h4>
+      <ul>
+        <li><a routerLink="/products">All Products</a></li>
+        <li><a [routerLink]="['/products']" [queryParams]="{categoryId: 1}">Scale Models</a></li>
+        <li><a [routerLink]="['/products']" [queryParams]="{categoryId: 2}">Paints & Tools</a></li>
+        <li><a [routerLink]="['/products']" [queryParams]="{categoryId: 3}">RC Cars</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <h4>Account</h4>
+      <ul>
+        <li><a routerLink="/auth/login">Login</a></li>
+        <li><a routerLink="/auth/register">Register</a></li>
+        <li><a routerLink="/account/orders">My Orders</a></li>
+        <li><a routerLink="/account/profile">Profile</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <h4>Info</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Shipping Policy</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; {{ currentYear }} ModelShop. All rights reserved.</p>
+    <p>Hobby models, painting supplies &amp; RC cars</p>
+  </div>
+</footer>

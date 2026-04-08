@@ -1,0 +1,194 @@
+<div class="page-container">
+  <h1 class="page-title">Checkout</h1>
+
+  <!-- Order Success -->
+  <mat-card *ngIf="orderPlaced" class="success-card">
+    <mat-card-content>
+      <div class="success-content">
+        <mat-icon class="success-icon">check_circle</mat-icon>
+        <h2>Order Placed Successfully!</h2>
+        <p>Thank you for your order. Your order number is:</p>
+        <p class="order-number">{{ orderPlaced.orderNumber }}</p>
+        <p>We'll send you a confirmation email shortly.</p>
+        <div class="success-actions">
+          <a mat-raised-button color="primary" routerLink="/account/orders">
+            <mat-icon>receipt_long</mat-icon>
+            View My Orders
+          </a>
+          <a mat-stroked-button routerLink="/products">
+            <mat-icon>shopping_bag</mat-icon>
+            Continue Shopping
+          </a>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Checkout Stepper -->
+  <div *ngIf="!orderPlaced" class="checkout-layout">
+
+    <div class="stepper-container">
+      <mat-stepper orientation="vertical" #stepper linear>
+
+        <!-- Step 1: Shipping -->
+        <mat-step [stepControl]="shippingForm" label="Shipping Address">
+          <form [formGroup]="shippingForm">
+            <div class="form-grid">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Street Address</mat-label>
+                <input matInput formControlName="street" placeholder="123 Model Street">
+                <mat-error *ngIf="shippingForm.get('street')?.hasError('required')">Street is required</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>City</mat-label>
+                <input matInput formControlName="city" placeholder="London">
+                <mat-error *ngIf="shippingForm.get('city')?.hasError('required')">City is required</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>State / County</mat-label>
+                <input matInput formControlName="state" placeholder="Greater London">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Post Code</mat-label>
+                <input matInput formControlName="zipCode" placeholder="SW1A 1AA">
+                <mat-error *ngIf="shippingForm.get('zipCode')?.hasError('required')">Post code is required</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Country</mat-label>
+                <input matInput formControlName="country" placeholder="United Kingdom">
+                <mat-error *ngIf="shippingForm.get('country')?.hasError('required')">Country is required</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="step-actions">
+              <button mat-raised-button color="primary" matStepperNext
+                      [disabled]="shippingForm.invalid">
+                Next: Payment
+              </button>
+            </div>
+          </form>
+        </mat-step>
+
+        <!-- Step 2: Payment -->
+        <mat-step [stepControl]="paymentForm" label="Payment Method">
+          <form [formGroup]="paymentForm">
+            <div class="payment-options">
+              <mat-radio-group formControlName="paymentMethod" class="payment-radio-group">
+                <mat-radio-button *ngFor="let method of paymentMethods"
+                                  [value]="method.value"
+                                  class="payment-option">
+                  {{ method.label }}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Order Notes (optional)</mat-label>
+              <textarea matInput formControlName="notes" rows="3"
+                        placeholder="Any special instructions for your order..."></textarea>
+            </mat-form-field>
+
+            <div class="step-actions">
+              <button mat-stroked-button matStepperPrevious>Back</button>
+              <button mat-raised-button color="primary" matStepperNext
+                      [disabled]="paymentForm.invalid">
+                Next: Review Order
+              </button>
+            </div>
+          </form>
+        </mat-step>
+
+        <!-- Step 3: Review & Confirm -->
+        <mat-step label="Review & Confirm">
+          <div class="review-section" *ngIf="cart">
+            <h3>Order Items</h3>
+            <div class="review-items">
+              <div class="review-item" *ngFor="let item of cart.items">
+                <span class="review-item-name">{{ item.productName }} x{{ item.quantity }}</span>
+                <span>£{{ item.lineTotal | number:'1.2-2' }}</span>
+              </div>
+            </div>
+
+            <mat-divider class="review-divider"></mat-divider>
+
+            <div class="review-totals">
+              <div class="review-row">
+                <span>Subtotal</span>
+                <span>£{{ cart.subtotal | number:'1.2-2' }}</span>
+              </div>
+              <div class="review-row">
+                <span>Shipping</span>
+                <span *ngIf="getShipping() === 0" class="free">FREE</span>
+                <span *ngIf="getShipping() > 0">£{{ getShipping() | number:'1.2-2' }}</span>
+              </div>
+              <div class="review-row">
+                <span>Tax (20%)</span>
+                <span>£{{ getTax() | number:'1.2-2' }}</span>
+              </div>
+              <div class="review-row total-row">
+                <strong>Total</strong>
+                <strong>£{{ getTotal() | number:'1.2-2' }}</strong>
+              </div>
+            </div>
+
+            <h3>Shipping To</h3>
+            <p class="address-preview">
+              {{ shippingForm.value.street }},
+              {{ shippingForm.value.city }},
+              {{ shippingForm.value.zipCode }},
+              {{ shippingForm.value.country }}
+            </p>
+
+            <h3>Payment Method</h3>
+            <p>{{ paymentForm.value.paymentMethod | titlecase }}</p>
+          </div>
+
+          <div class="step-actions">
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button mat-raised-button color="primary"
+                    [disabled]="placingOrder"
+                    (click)="placeOrder()">
+              <mat-spinner *ngIf="placingOrder" diameter="20" class="btn-spinner"></mat-spinner>
+              <mat-icon *ngIf="!placingOrder">lock</mat-icon>
+              {{ placingOrder ? 'Placing Order...' : 'Place Order' }}
+            </button>
+          </div>
+        </mat-step>
+      </mat-stepper>
+    </div>
+
+    <!-- Sidebar Summary -->
+    <aside class="checkout-summary">
+      <mat-card *ngIf="cart">
+        <mat-card-header>
+          <mat-card-title>Order Summary</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="summary-item" *ngFor="let item of cart.items">
+            <span>{{ item.productName }} x{{ item.quantity }}</span>
+            <span>£{{ item.lineTotal | number:'1.2-2' }}</span>
+          </div>
+          <mat-divider class="summary-divider"></mat-divider>
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>£{{ cart.subtotal | number:'1.2-2' }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span *ngIf="getShipping() === 0" class="free">FREE</span>
+            <span *ngIf="getShipping() > 0">£{{ getShipping() | number:'1.2-2' }}</span>
+          </div>
+          <div class="summary-row total-row">
+            <strong>Total</strong>
+            <strong>£{{ getTotal() | number:'1.2-2' }}</strong>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </aside>
+
+  </div>
+</div>

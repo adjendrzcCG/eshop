@@ -1,0 +1,71 @@
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="logo-icon">person_add</mat-icon>
+        Create an Account
+      </mat-card-title>
+      <mat-card-subtitle>Join ModelShop and start building your collection.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="registerForm" (ngSubmit)="register()" class="auth-form">
+        <div class="name-row">
+          <mat-form-field appearance="outline">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" placeholder="John" autocomplete="given-name">
+            <mat-error *ngIf="registerForm.get('firstName')?.hasError('required')">Required</mat-error>
+            <mat-error *ngIf="registerForm.get('firstName')?.hasError('maxlength')">Max 50 characters</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" placeholder="Smith" autocomplete="family-name">
+            <mat-error *ngIf="registerForm.get('lastName')?.hasError('required')">Required</mat-error>
+            <mat-error *ngIf="registerForm.get('lastName')?.hasError('maxlength')">Max 50 characters</mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email Address</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="you@example.com" autocomplete="email">
+          <mat-icon matSuffix>email</mat-icon>
+          <mat-error *ngIf="registerForm.get('email')?.hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="registerForm.get('email')?.hasError('email')">Please enter a valid email</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'"
+                 formControlName="password" autocomplete="new-password">
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-hint>Minimum 6 characters</mat-hint>
+          <mat-error *ngIf="registerForm.get('password')?.hasError('required')">Password is required</mat-error>
+          <mat-error *ngIf="registerForm.get('password')?.hasError('minlength')">At least 6 characters required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Phone Number (optional)</mat-label>
+          <input matInput type="tel" formControlName="phone" placeholder="+44 7700 900000" autocomplete="tel">
+          <mat-icon matSuffix>phone</mat-icon>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit"
+                class="submit-btn" [disabled]="registerForm.invalid || loading">
+          <mat-spinner *ngIf="loading" diameter="20" class="btn-spinner"></mat-spinner>
+          <mat-icon *ngIf="!loading">how_to_reg</mat-icon>
+          {{ loading ? 'Creating Account...' : 'Create Account' }}
+        </button>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <p class="auth-link">
+        Already have an account?
+        <a routerLink="/auth/login">Sign in here</a>
+      </p>
+    </mat-card-actions>
+  </mat-card>
+</div>

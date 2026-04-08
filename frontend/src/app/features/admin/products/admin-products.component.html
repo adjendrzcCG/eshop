@@ -1,0 +1,107 @@
+<div class="page-container">
+  <div class="admin-header">
+    <h1 class="page-title">Products Management</h1>
+    <div class="admin-actions">
+      <span class="total-count">{{ totalProducts }} products total</span>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <!-- Products Table -->
+  <mat-card *ngIf="!loading">
+    <mat-card-content>
+      <div class="table-responsive">
+        <table mat-table [dataSource]="products" class="products-table">
+
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td mat-cell *matCellDef="let p">{{ p.id }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let p">
+              <div class="product-name-cell">
+                <img *ngIf="p.primaryImageUrl" [src]="p.primaryImageUrl" [alt]="p.name" class="product-thumbnail">
+                <span>{{ p.name }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="sku">
+            <th mat-header-cell *matHeaderCellDef>SKU</th>
+            <td mat-cell *matCellDef="let p" class="sku-cell">{{ p.sku }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef>Price</th>
+            <td mat-cell *matCellDef="let p">
+              <span *ngIf="p.salePrice" class="sale-price">£{{ p.salePrice | number:'1.2-2' }}</span>
+              <span [class.original-price]="p.salePrice">£{{ p.price | number:'1.2-2' }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="stock">
+            <th mat-header-cell *matHeaderCellDef>Stock</th>
+            <td mat-cell *matCellDef="let p">
+              <span [class.low-stock]="p.stockQuantity <= 5 && p.stockQuantity > 0"
+                    [class.no-stock]="p.stockQuantity === 0">
+                {{ p.stockQuantity }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef>Category</th>
+            <td mat-cell *matCellDef="let p">{{ p.categoryName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="featured">
+            <th mat-header-cell *matHeaderCellDef>Featured</th>
+            <td mat-cell *matCellDef="let p">
+              <mat-icon [class.icon-yes]="p.featured" [class.icon-no]="!p.featured">
+                {{ p.featured ? 'star' : 'star_border' }}
+              </mat-icon>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="active">
+            <th mat-header-cell *matHeaderCellDef>Active</th>
+            <td mat-cell *matCellDef="let p">
+              <mat-icon [class.icon-yes]="p.active" [class.icon-no]="!p.active">
+                {{ p.active ? 'check_circle' : 'cancel' }}
+              </mat-icon>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let p">
+              <button mat-icon-button color="primary"
+                      [routerLink]="['/products', p.id]"
+                      matTooltip="View Product">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button mat-icon-button color="warn"
+                      (click)="deleteProduct(p.id)"
+                      matTooltip="Delete Product">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+
+      <div *ngIf="products.length === 0" class="no-data">
+        No products found.
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

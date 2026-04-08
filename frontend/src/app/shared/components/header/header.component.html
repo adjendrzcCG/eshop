@@ -1,0 +1,73 @@
+<mat-toolbar color="primary" class="header-toolbar">
+  <div class="header-content">
+    <!-- Logo -->
+    <a routerLink="/" class="logo">
+      <mat-icon>precision_manufacturing</mat-icon>
+      <span>ModelShop</span>
+    </a>
+
+    <!-- Navigation Links -->
+    <nav class="nav-links" fxShow fxHide.lt-md>
+      <a mat-button routerLink="/products">All Products</a>
+      <button mat-button [matMenuTriggerFor]="categoriesMenu">
+        Categories <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #categoriesMenu="matMenu">
+        <a mat-menu-item *ngFor="let cat of categories" [routerLink]="['/products']" [queryParams]="{categoryId: cat.id}">
+          {{ cat.name }}
+        </a>
+      </mat-menu>
+    </nav>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <mat-form-field appearance="outline" class="search-field">
+        <input matInput placeholder="Search models, paints, RC cars..."
+               [(ngModel)]="searchQuery"
+               (keyup.enter)="search()">
+        <button mat-icon-button matSuffix (click)="search()">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <span class="spacer"></span>
+
+    <!-- Cart -->
+    <button mat-icon-button routerLink="/cart" class="cart-btn">
+      <mat-icon [matBadge]="cartItemCount > 0 ? cartItemCount : null" matBadgeColor="accent">
+        shopping_cart
+      </mat-icon>
+    </button>
+
+    <!-- Auth Buttons -->
+    <ng-container *ngIf="!currentUser; else userMenu">
+      <a mat-button routerLink="/auth/login">Login</a>
+      <a mat-raised-button color="accent" routerLink="/auth/register">Register</a>
+    </ng-container>
+
+    <ng-template #userMenu>
+      <button mat-button [matMenuTriggerFor]="accountMenu">
+        <mat-icon>account_circle</mat-icon>
+        {{ currentUser?.firstName }}
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #accountMenu="matMenu">
+        <a mat-menu-item routerLink="/account/profile">
+          <mat-icon>person</mat-icon> My Profile
+        </a>
+        <a mat-menu-item routerLink="/account/orders">
+          <mat-icon>receipt</mat-icon> My Orders
+        </a>
+        <mat-divider></mat-divider>
+        <a mat-menu-item *ngIf="authService.isAdmin" routerLink="/admin">
+          <mat-icon>admin_panel_settings</mat-icon> Admin Panel
+        </a>
+        <mat-divider *ngIf="authService.isAdmin"></mat-divider>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon> Logout
+        </button>
+      </mat-menu>
+    </ng-template>
+  </div>
+</mat-toolbar>
