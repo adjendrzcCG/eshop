@@ -1,0 +1,70 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$primary: mat.define-palette(mat.$indigo-palette, 800);
+$accent: mat.define-palette(mat.$orange-palette, 700);
+$warn: mat.define-palette(mat.$red-palette);
+
+$theme: mat.define-light-theme((
+  color: (
+    primary: $primary,
+    accent: $accent,
+    warn: $warn
+  )
+));
+
+@include mat.all-component-themes($theme);
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  background: #fafafa;
+  color: #212121;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 500;
+}
+
+a {
+  color: #1a237e;
+}
+
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.page-title {
+  margin-bottom: 24px;
+  font-size: 1.8rem;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 64px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 64px 24px;
+
+  mat-icon {
+    font-size: 64px;
+    height: 64px;
+    width: 64px;
+    color: #bdbdbd;
+  }
+
+  p {
+    color: #757575;
+    font-size: 1.1rem;
+  }
+}

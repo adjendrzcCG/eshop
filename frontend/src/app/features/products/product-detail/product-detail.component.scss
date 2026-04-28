@@ -1,0 +1,249 @@
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 24px;
+  font-size: 0.9rem;
+  color: #757575;
+
+  a { color: #1a237e; text-decoration: none; &:hover { text-decoration: underline; } }
+  mat-icon { font-size: 18px; height: 18px; width: 18px; }
+  span { color: #424242; }
+}
+
+.product-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.image-gallery {
+  .main-image {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+    margin-bottom: 12px;
+
+    img {
+      width: 100%;
+      height: 400px;
+      object-fit: contain;
+    }
+
+    .sale-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: #ff6d00;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+  }
+
+  .thumbnails {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    img {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color 0.2s;
+
+      &.active, &:hover {
+        border-color: #1a237e;
+      }
+    }
+  }
+}
+
+.product-info {
+  .badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .product-name {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: #212121;
+  }
+
+  .product-sku {
+    color: #9e9e9e;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+
+  .stars { display: flex; }
+  .star { font-size: 20px; height: 20px; width: 20px; color: #ff6d00; }
+  .rating-text { color: #757575; font-size: 0.9rem; }
+}
+
+.price-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  .price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a237e;
+
+    &.sale-price { color: #d32f2f; }
+  }
+
+  .original-price {
+    font-size: 1.2rem;
+    color: #9e9e9e;
+    text-decoration: line-through;
+  }
+}
+
+.stock-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+
+  mat-icon {
+    &.in-stock { color: #388e3c; }
+    &.out-of-stock { color: #d32f2f; }
+  }
+
+  .low-stock { color: #f57c00; }
+  .out-of-stock-text { color: #d32f2f; }
+}
+
+.quantity-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+
+  label { font-weight: 500; }
+
+  .qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 4px;
+
+    .qty-value {
+      min-width: 32px;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+  }
+}
+
+.add-to-cart-btn {
+  width: 100%;
+  height: 50px;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  .btn-spinner { display: inline-block; }
+}
+
+.info-tabs {
+  margin-bottom: 48px;
+}
+
+.tab-content {
+  padding: 24px 0;
+  line-height: 1.7;
+  color: #424242;
+
+  .muted { color: #9e9e9e; }
+}
+
+.specs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+
+  th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  th {
+    width: 30%;
+    color: #757575;
+    font-weight: 600;
+  }
+}
+
+.reviews-section {
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+    color: #1a237e;
+  }
+}
+
+.no-reviews {
+  text-align: center;
+  padding: 32px;
+  color: #9e9e9e;
+
+  mat-icon { font-size: 48px; height: 48px; width: 48px; display: block; margin: 0 auto 12px; }
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.review-card {
+  .stars { display: flex; }
+  .star { font-size: 16px; height: 16px; width: 16px; color: #ff6d00; }
+}
+
+.review-form-card {
+  margin-top: 24px;
+
+  .full-width { width: 100%; }
+}
+
+.login-prompt {
+  margin-top: 16px;
+  color: #757575;
+  a { color: #1a237e; }
+}

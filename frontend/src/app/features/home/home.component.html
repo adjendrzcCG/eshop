@@ -1,0 +1,98 @@
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Welcome to ModelShop</h1>
+    <p class="hero-subtitle">Shop Models, Paints &amp; RC Cars</p>
+    <p class="hero-description">Your one-stop destination for scale models, hobby paints, tools, and radio-controlled vehicles.</p>
+    <a mat-raised-button color="accent" routerLink="/products" class="hero-cta">
+      <mat-icon>shopping_bag</mat-icon>
+      Shop Now
+    </a>
+  </div>
+</section>
+
+<div class="page-container">
+
+  <!-- Featured Products -->
+  <section class="section">
+    <h2 class="section-title">Featured Products</h2>
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+    <div *ngIf="!loading && featuredProducts.length === 0" class="empty-state">
+      <mat-icon>inventory_2</mat-icon>
+      <p>No featured products at the moment.</p>
+    </div>
+    <div *ngIf="!loading && featuredProducts.length > 0" class="product-grid">
+      <app-product-card
+        *ngFor="let product of featuredProducts"
+        [product]="product">
+      </app-product-card>
+    </div>
+    <div class="view-all-container">
+      <a mat-stroked-button color="primary" routerLink="/products">View All Products</a>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="section categories-section">
+    <h2 class="section-title">Shop by Category</h2>
+    <div class="categories-grid">
+      <mat-card class="category-card" routerLink="/products" [queryParams]="{keyword: 'scale models'}" matRipple>
+        <mat-card-content>
+          <mat-icon class="category-icon">view_in_ar</mat-icon>
+          <h3>Scale Models</h3>
+          <p>Aircraft, Ships, Tanks &amp; Cars</p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="category-card" routerLink="/products" [queryParams]="{keyword: 'paints'}" matRipple>
+        <mat-card-content>
+          <mat-icon class="category-icon">palette</mat-icon>
+          <h3>Paints &amp; Supplies</h3>
+          <p>Acrylic, Enamel &amp; Lacquer</p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="category-card" routerLink="/products" [queryParams]="{keyword: 'rc cars'}" matRipple>
+        <mat-card-content>
+          <mat-icon class="category-icon">toys</mat-icon>
+          <h3>RC Cars</h3>
+          <p>Electric &amp; Nitro Powered</p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="category-card" routerLink="/products" [queryParams]="{keyword: 'tools'}" matRipple>
+        <mat-card-content>
+          <mat-icon class="category-icon">build</mat-icon>
+          <h3>Tools &amp; Accessories</h3>
+          <p>Everything you need to build</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section class="section features-section">
+    <h2 class="section-title">Why Choose ModelShop?</h2>
+    <div class="features-grid">
+      <div class="feature-item">
+        <mat-icon class="feature-icon">local_shipping</mat-icon>
+        <h3>Free Shipping</h3>
+        <p>On all orders over £100. Fast and reliable delivery.</p>
+      </div>
+      <div class="feature-item">
+        <mat-icon class="feature-icon">military_tech</mat-icon>
+        <h3>Expert Advice</h3>
+        <p>Our team of hobbyists are here to help you find the right product.</p>
+      </div>
+      <div class="feature-item">
+        <mat-icon class="feature-icon">verified</mat-icon>
+        <h3>Quality Guaranteed</h3>
+        <p>We only stock products from reputable brands and manufacturers.</p>
+      </div>
+      <div class="feature-item">
+        <mat-icon class="feature-icon">support_agent</mat-icon>
+        <h3>Great Support</h3>
+        <p>Friendly customer service available 7 days a week.</p>
+      </div>
+    </div>
+  </section>
+
+</div>

@@ -1,0 +1,131 @@
+<div class="product-list-layout" [formGroup]="filterForm">
+
+  <!-- Sidebar Filters -->
+  <aside class="filter-sidebar">
+    <div class="filter-header">
+      <h3>Filters</h3>
+      <button mat-stroked-button (click)="clearFilters()" class="clear-btn">Clear All</button>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="filter-section">
+      <h4>Search</h4>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Keywords</mat-label>
+        <input matInput formControlName="keyword" placeholder="Search products...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="filter-section">
+      <h4>Category</h4>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Select Category</mat-label>
+        <mat-select formControlName="categoryId">
+          <mat-option [value]="null">All Categories</mat-option>
+          <mat-option *ngFor="let cat of categories" [value]="cat.id">
+            {{ cat.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="filter-section">
+      <h4>Price Range</h4>
+      <div class="price-range">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Min £</mat-label>
+          <input matInput type="number" formControlName="minPrice" min="0">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Max £</mat-label>
+          <input matInput type="number" formControlName="maxPrice" min="0">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="filter-section">
+      <h4>Brand</h4>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Brand</mat-label>
+        <input matInput formControlName="brand" placeholder="e.g. Tamiya">
+      </mat-form-field>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="product-main">
+    <div class="toolbar">
+      <p class="results-count" *ngIf="!loading">
+        {{ totalProducts }} product{{ totalProducts !== 1 ? 's' : '' }} found
+      </p>
+
+      <div class="sort-controls">
+        <mat-form-field appearance="outline" class="sort-select">
+          <mat-label>Sort By</mat-label>
+          <mat-select formControlName="sortBy">
+            <mat-option value="createdAt">Newest</mat-option>
+            <mat-option value="price">Price</mat-option>
+            <mat-option value="name">Name</mat-option>
+            <mat-option value="averageRating">Rating</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="sort-dir">
+          <mat-label>Order</mat-label>
+          <mat-select formControlName="sortDir">
+            <mat-option value="asc">Ascending</mat-option>
+            <mat-option value="desc">Descending</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+
+    <!-- Products Grid -->
+    <div *ngIf="!loading && products.length > 0" class="product-grid">
+      <app-product-card *ngFor="let product of products" [product]="product"></app-product-card>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && products.length === 0" class="empty-state">
+      <mat-icon>search_off</mat-icon>
+      <h3>No products found</h3>
+      <p>Try adjusting your filters or search terms.</p>
+      <button mat-raised-button color="primary" (click)="clearFilters()">Clear Filters</button>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="!loading && totalPages > 1" class="pagination">
+      <button mat-icon-button
+              [disabled]="currentPage === 0"
+              (click)="onPageChange(currentPage - 1)">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
+      <button mat-button
+              *ngFor="let page of pages"
+              [class.active-page]="page === currentPage"
+              (click)="onPageChange(page)">
+        {{ page + 1 }}
+      </button>
+
+      <button mat-icon-button
+              [disabled]="currentPage >= totalPages - 1"
+              (click)="onPageChange(currentPage + 1)">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,199 @@
+<div class="page-container">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="60"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!loading && product">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a routerLink="/">Home</a>
+      <mat-icon>chevron_right</mat-icon>
+      <a routerLink="/products">Products</a>
+      <mat-icon>chevron_right</mat-icon>
+      <span>{{ product.name }}</span>
+    </nav>
+
+    <!-- Product Detail -->
+    <div class="product-detail">
+
+      <!-- Image Gallery -->
+      <div class="image-gallery">
+        <div class="main-image">
+          <img [src]="selectedImage || 'assets/placeholder.png'" [alt]="product.name">
+          <span *ngIf="product.salePrice" class="sale-badge">SALE</span>
+        </div>
+        <div class="thumbnails" *ngIf="product.images && product.images.length > 1">
+          <img *ngFor="let img of product.images"
+               [src]="img.url"
+               [alt]="img.altText || product.name"
+               [class.active]="selectedImage === img.url"
+               (click)="selectedImage = img.url">
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info">
+        <div class="badges">
+          <mat-chip *ngIf="product.brand">{{ product.brand }}</mat-chip>
+          <mat-chip *ngIf="product.scale">Scale: {{ product.scale }}</mat-chip>
+          <mat-chip color="accent" *ngIf="product.featured">Featured</mat-chip>
+        </div>
+
+        <h1 class="product-name">{{ product.name }}</h1>
+
+        <p class="product-sku">SKU: {{ product.sku }}</p>
+
+        <!-- Rating -->
+        <div class="rating-row" *ngIf="product.reviewCount > 0">
+          <span class="stars">
+            <mat-icon *ngFor="let star of getRatingStars(product.averageRating)" class="star">{{ star }}</mat-icon>
+          </span>
+          <span class="rating-text">{{ product.averageRating | number:'1.1-1' }} ({{ product.reviewCount }} reviews)</span>
+        </div>
+
+        <!-- Price -->
+        <div class="price-section">
+          <span class="price" [class.sale-price]="product.salePrice">
+            £{{ getEffectivePrice() | number:'1.2-2' }}
+          </span>
+          <span *ngIf="product.salePrice" class="original-price">
+            £{{ product.price | number:'1.2-2' }}
+          </span>
+        </div>
+
+        <!-- Stock -->
+        <div class="stock-status">
+          <mat-icon [class.in-stock]="product.stockQuantity > 0" [class.out-of-stock]="product.stockQuantity === 0">
+            {{ product.stockQuantity > 0 ? 'check_circle' : 'cancel' }}
+          </mat-icon>
+          <span *ngIf="product.stockQuantity > 5">In Stock</span>
+          <span *ngIf="product.stockQuantity > 0 && product.stockQuantity <= 5" class="low-stock">
+            Only {{ product.stockQuantity }} left
+          </span>
+          <span *ngIf="product.stockQuantity === 0" class="out-of-stock-text">Out of Stock</span>
+        </div>
+
+        <!-- Quantity Selector -->
+        <div class="quantity-section" *ngIf="product.stockQuantity > 0">
+          <label>Quantity:</label>
+          <div class="qty-controls">
+            <button mat-icon-button (click)="decrementQty()" [disabled]="quantity <= 1">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span class="qty-value">{{ quantity }}</span>
+            <button mat-icon-button (click)="incrementQty()" [disabled]="quantity >= product.stockQuantity">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Add to Cart -->
+        <button mat-raised-button color="primary" class="add-to-cart-btn"
+                [disabled]="product.stockQuantity === 0 || addingToCart"
+                (click)="addToCart()">
+          <mat-spinner *ngIf="addingToCart" diameter="20" class="btn-spinner"></mat-spinner>
+          <mat-icon *ngIf="!addingToCart">shopping_cart</mat-icon>
+          {{ addingToCart ? 'Adding...' : 'Add to Cart' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs: Description & Specs -->
+    <mat-tab-group class="info-tabs">
+      <mat-tab label="Description">
+        <div class="tab-content">
+          <p *ngIf="product.description; else noDesc">{{ product.description }}</p>
+          <ng-template #noDesc><p class="muted">No description available.</p></ng-template>
+        </div>
+      </mat-tab>
+      <mat-tab label="Specifications">
+        <div class="tab-content">
+          <div *ngIf="product.specifications; else noSpecs" class="specs-content">
+            <table class="specs-table">
+              <tr *ngIf="product.brand">
+                <th>Brand</th>
+                <td>{{ product.brand }}</td>
+              </tr>
+              <tr *ngIf="product.scale">
+                <th>Scale</th>
+                <td>{{ product.scale }}</td>
+              </tr>
+              <tr>
+                <th>SKU</th>
+                <td>{{ product.sku }}</td>
+              </tr>
+              <tr>
+                <th>Category</th>
+                <td>{{ product.categoryName }}</td>
+              </tr>
+            </table>
+            <p class="specs-text">{{ product.specifications }}</p>
+          </div>
+          <ng-template #noSpecs><p class="muted">No specifications available.</p></ng-template>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+    <!-- Reviews -->
+    <section class="reviews-section">
+      <h2>Customer Reviews ({{ reviews.length }})</h2>
+
+      <div *ngIf="reviews.length === 0" class="no-reviews">
+        <mat-icon>rate_review</mat-icon>
+        <p>No reviews yet. Be the first to review this product!</p>
+      </div>
+
+      <div class="reviews-list">
+        <mat-card class="review-card" *ngFor="let review of reviews">
+          <mat-card-header>
+            <mat-card-title>{{ review.title || 'Review' }}</mat-card-title>
+            <mat-card-subtitle>
+              <span class="stars">
+                <mat-icon *ngFor="let star of getRatingStars(review.rating)" class="star">{{ star }}</mat-icon>
+              </span>
+              by {{ review.userFirstName }} {{ review.userLastName }} &mdash; {{ review.createdAt | date:'mediumDate' }}
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{ review.comment }}</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Review Form -->
+      <mat-card class="review-form-card" *ngIf="authService.isLoggedIn">
+        <mat-card-header>
+          <mat-card-title>Write a Review</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Rating (1-5)</mat-label>
+              <input matInput type="number" formControlName="rating" min="1" max="5">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Title</mat-label>
+              <input matInput formControlName="title" placeholder="Summary of your review">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Review</mat-label>
+              <textarea matInput formControlName="comment" rows="4" placeholder="Share your experience..."></textarea>
+            </mat-form-field>
+            <button mat-raised-button color="primary" type="submit"
+                    [disabled]="reviewForm.invalid || submittingReview">
+              {{ submittingReview ? 'Submitting...' : 'Submit Review' }}
+            </button>
+          </form>
+        </mat-card-content>
+      </mat-card>
+
+      <div *ngIf="!authService.isLoggedIn" class="login-prompt">
+        <p>Please <a routerLink="/auth/login">log in</a> to leave a review.</p>
+      </div>
+    </section>
+
+  </ng-container>
+</div>

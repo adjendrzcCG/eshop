@@ -1,0 +1,115 @@
+<div class="page-container">
+  <h1 class="page-title">Shopping Cart</h1>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <!-- Empty Cart -->
+  <div *ngIf="!loading && (!cart || cart.items.length === 0)" class="empty-state">
+    <mat-icon>shopping_cart</mat-icon>
+    <h3>Your cart is empty</h3>
+    <p>Looks like you haven't added any items yet.</p>
+    <a mat-raised-button color="primary" routerLink="/products">
+      <mat-icon>shopping_bag</mat-icon>
+      Continue Shopping
+    </a>
+  </div>
+
+  <!-- Cart with Items -->
+  <div *ngIf="!loading && cart && cart.items.length > 0" class="cart-layout">
+
+    <!-- Items Column -->
+    <div class="cart-items">
+      <mat-card class="item-card" *ngFor="let item of cart.items">
+        <div class="item-row">
+          <img class="item-image"
+               [src]="item.productImageUrl || 'assets/placeholder.png'"
+               [alt]="item.productName">
+
+          <div class="item-details">
+            <a class="item-name" [routerLink]="['/products', item.productId]">
+              {{ item.productName }}
+            </a>
+            <p class="item-sku">SKU: {{ item.productSku }}</p>
+            <p class="item-price">
+              £{{ (item.productSalePrice ?? item.productPrice) | number:'1.2-2' }}
+              <span *ngIf="item.productSalePrice" class="original-price">
+                £{{ item.productPrice | number:'1.2-2' }}
+              </span>
+            </p>
+          </div>
+
+          <div class="item-qty">
+            <button mat-icon-button
+                    (click)="updateQuantity(item, item.quantity - 1)"
+                    [disabled]="item.quantity <= 1">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span class="qty-value">{{ item.quantity }}</span>
+            <button mat-icon-button
+                    (click)="updateQuantity(item, item.quantity + 1)"
+                    [disabled]="item.quantity >= item.availableStock">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+
+          <div class="item-total">
+            £{{ item.lineTotal | number:'1.2-2' }}
+          </div>
+
+          <button mat-icon-button class="remove-btn" (click)="removeItem(item)"
+                  matTooltip="Remove item">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+      </mat-card>
+
+      <div class="continue-shopping">
+        <a mat-stroked-button routerLink="/products">
+          <mat-icon>arrow_back</mat-icon>
+          Continue Shopping
+        </a>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <aside class="order-summary">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Order Summary</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="summary-row">
+            <span>Subtotal ({{ cart.totalItems }} items)</span>
+            <span>£{{ cart.subtotal | number:'1.2-2' }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span *ngIf="getShipping() === 0" class="free-shipping">FREE</span>
+            <span *ngIf="getShipping() > 0">£{{ getShipping() | number:'1.2-2' }}</span>
+          </div>
+          <p *ngIf="getShipping() > 0" class="shipping-hint">
+            Add £{{ (100 - cart.subtotal) | number:'1.2-2' }} more for free shipping
+          </p>
+          <div class="summary-row">
+            <span>Tax (20% VAT)</span>
+            <span>£{{ getTax() | number:'1.2-2' }}</span>
+          </div>
+          <mat-divider class="summary-divider"></mat-divider>
+          <div class="summary-row total-row">
+            <span>Total</span>
+            <span>£{{ getTotal() | number:'1.2-2' }}</span>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" class="checkout-btn" (click)="checkout()">
+            <mat-icon>lock</mat-icon>
+            Proceed to Checkout
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </aside>
+  </div>
+</div>

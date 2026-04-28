@@ -1,0 +1,43 @@
+<mat-card class="product-card" [routerLink]="['/products', product.id]" style="cursor: pointer;">
+  <div class="card-image-container">
+    <img [src]="product.primaryImageUrl || 'assets/images/placeholder.png'"
+         [alt]="product.name"
+         class="product-image"
+         loading="lazy">
+    <div class="badges">
+      <span *ngIf="product.featured" class="badge featured-badge">Featured</span>
+      <span *ngIf="getDiscountPercent() > 0" class="badge sale-badge">-{{ getDiscountPercent() }}%</span>
+      <span *ngIf="!isInStock()" class="badge out-of-stock-badge">Out of Stock</span>
+    </div>
+  </div>
+
+  <mat-card-content>
+    <div class="product-meta">
+      <span class="brand">{{ product.brand }}</span>
+      <span *ngIf="product.scale" class="scale">{{ product.scale }}</span>
+    </div>
+
+    <h3 class="product-name">{{ product.name }}</h3>
+
+    <div class="rating" *ngIf="product.reviewCount > 0">
+      <mat-icon class="star-icon">star</mat-icon>
+      <span>{{ product.averageRating | number:'1.1-1' }}</span>
+      <span class="review-count">({{ product.reviewCount }})</span>
+    </div>
+
+    <div class="price-section">
+      <span class="effective-price">£{{ getEffectivePrice() | number:'1.2-2' }}</span>
+      <span *ngIf="product.salePrice" class="original-price">£{{ product.price | number:'1.2-2' }}</span>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-raised-button color="primary"
+            [disabled]="!isInStock() || addingToCart"
+            (click)="addToCart($event)"
+            class="add-to-cart-btn">
+      <mat-icon>{{ addingToCart ? 'hourglass_empty' : 'add_shopping_cart' }}</mat-icon>
+      {{ addingToCart ? 'Adding...' : 'Add to Cart' }}
+    </button>
+  </mat-card-actions>
+</mat-card>

@@ -1,0 +1,158 @@
+.product-list-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.filter-sidebar {
+  position: sticky;
+  top: 80px;
+  height: fit-content;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 16px;
+
+  @media (max-width: 900px) {
+    position: static;
+  }
+}
+
+.filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a237e;
+  }
+}
+
+.clear-btn {
+  font-size: 0.8rem;
+}
+
+.filter-section {
+  padding: 16px 0;
+
+  h4 {
+    margin: 0 0 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #424242;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.price-range {
+  display: flex;
+  gap: 8px;
+}
+
+.half-width {
+  width: calc(50% - 4px);
+}
+
+.product-main {
+  min-width: 0;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.results-count {
+  margin: 0;
+  color: #757575;
+  font-size: 0.95rem;
+}
+
+.sort-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  .sort-select {
+    width: 150px;
+  }
+
+  .sort-dir {
+    width: 130px;
+  }
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+
+  .active-page {
+    background: #1a237e;
+    color: white;
+    border-radius: 4px;
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 64px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 64px 24px;
+
+  mat-icon {
+    font-size: 64px;
+    height: 64px;
+    width: 64px;
+    color: #bdbdbd;
+    display: block;
+    margin: 0 auto 16px;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    color: #424242;
+  }
+
+  p {
+    color: #757575;
+  }
+}

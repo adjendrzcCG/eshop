@@ -1,0 +1,87 @@
+<div class="page-container">
+  <h1 class="page-title">My Orders</h1>
+
+  <div class="account-nav">
+    <a mat-button routerLink="/account/profile" routerLinkActive="active-link">
+      <mat-icon>person</mat-icon> Profile
+    </a>
+    <a mat-button routerLink="/account/orders" routerLinkActive="active-link">
+      <mat-icon>receipt_long</mat-icon> My Orders
+    </a>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && orders.length === 0" class="empty-state">
+    <mat-icon>receipt_long</mat-icon>
+    <h3>No orders yet</h3>
+    <p>You haven't placed any orders. Start shopping!</p>
+    <a mat-raised-button color="primary" routerLink="/products">Shop Now</a>
+  </div>
+
+  <!-- Orders List -->
+  <mat-accordion *ngIf="!loading && orders.length > 0" class="orders-accordion">
+    <mat-expansion-panel *ngFor="let order of orders" class="order-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title class="order-header-title">
+          <span class="order-number">#{{ order.orderNumber }}</span>
+          <span class="order-date">{{ order.createdAt | date:'d MMM yyyy' }}</span>
+        </mat-panel-title>
+        <mat-panel-description class="order-header-desc">
+          <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+            {{ order.status }}
+          </span>
+          <span class="order-total">£{{ order.totalAmount | number:'1.2-2' }}</span>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <!-- Order Items -->
+      <div class="order-content">
+        <div class="order-items">
+          <div class="order-item" *ngFor="let item of order.items">
+            <span class="item-name">{{ item.productName }}</span>
+            <span class="item-sku" *ngIf="item.productSku">{{ item.productSku }}</span>
+            <span class="item-qty">x{{ item.quantity }}</span>
+            <span class="item-price">£{{ item.totalPrice | number:'1.2-2' }}</span>
+          </div>
+        </div>
+
+        <mat-divider class="order-divider"></mat-divider>
+
+        <div class="order-summary">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>£{{ order.subtotal | number:'1.2-2' }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span>£{{ order.shippingCost | number:'1.2-2' }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Tax</span>
+            <span>£{{ order.tax | number:'1.2-2' }}</span>
+          </div>
+          <div class="summary-row total-row">
+            <strong>Total</strong>
+            <strong>£{{ order.totalAmount | number:'1.2-2' }}</strong>
+          </div>
+        </div>
+
+        <div class="order-meta">
+          <div class="meta-item" *ngIf="order.shippingAddress">
+            <mat-icon>local_shipping</mat-icon>
+            <span>{{ order.shippingAddress.street }}, {{ order.shippingAddress.city }}, {{ order.shippingAddress.country }}</span>
+          </div>
+          <div class="meta-item">
+            <mat-icon>payment</mat-icon>
+            <span>{{ order.paymentMethod }} &mdash; {{ order.paymentStatus }}</span>
+          </div>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
